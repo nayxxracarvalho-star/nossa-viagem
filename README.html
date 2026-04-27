@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nossa viagem pelo universo</title>
+
+<style>
+body {
+  margin: 0;
+  background: black;
+  color: white;
+  font-family: Arial;
+  overflow: hidden;
+}
+
+#home {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+button {
+  margin-top: 20px;
+  padding: 12px 25px;
+  border-radius: 20px;
+  border: none;
+  background: #d8a39d;
+}
+
+#universe {
+  display: none;
+}
+
+canvas {
+  position: absolute;
+}
+</style>
+</head>
+
+<body>
+
+<div id="home">
+  <h1>Nossa viagem pelo universo</h1>
+  <p>Posso te levar pra conhecer o universo?<br>Só você e eu.</p>
+  <p>Criado por Nayara Carvalho</p>
+  <button onclick="start()">Começar</button>
+</div>
+
+<div id="universe">
+  <canvas id="stars"></canvas>
+</div>
+
+<script>
+function start() {
+  document.getElementById("home").style.display = "none";
+  document.getElementById("universe").style.display = "block";
+}
+
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let stars = [];
+
+// estrelas normais
+for (let i = 0; i < 400; i++) {
+  stars.push({
+    x: (Math.random() - 0.5) * canvas.width,
+    y: (Math.random() - 0.5) * canvas.height,
+    z: Math.random() * canvas.width
+  });
+}
+
+// estrela cadente
+let shootingStar = {
+  x: Math.random() * canvas.width,
+  y: 0,
+  speed: 10,
+  size: 3
+};
+
+function animate() {
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // estrelas principais
+  for (let i = 0; i < stars.length; i++) {
+    let star = stars[i];
+
+    star.z -= 6;
+
+    if (star.z <= 0) {
+      star.x = (Math.random() - 0.5) * canvas.width;
+      star.y = (Math.random() - 0.5) * canvas.height;
+      star.z = canvas.width;
+    }
+
+    let k = 128 / star.z;
+    let x = star.x * k + canvas.width / 2;
+    let y = star.y * k + canvas.height / 2;
+
+    let size = (1 - star.z / canvas.width) * 4;
+
+    ctx.fillStyle = "white";
+    ctx.fillRect(x, y, size, size);
+  }
+
+  // estrela cadente
+  ctx.fillStyle = "white";
+  ctx.fillRect(shootingStar.x, shootingStar.y, shootingStar.size, shootingStar.size);
+
+  shootingStar.x += shootingStar.speed;
+  shootingStar.y += shootingStar.speed;
+
+  if (shootingStar.x > canvas.width || shootingStar.y > canvas.height) {
+    shootingStar.x = Math.random() * canvas.width;
+    shootingStar.y = 0;
+  }
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+
+</body>
+</html>
